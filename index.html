@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¡Feliz Cumpleaños Queso!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -59,7 +60,7 @@
             padding: 35px 25px;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
             backdrop-filter: blur(5px);
-            position: relative; /* Clave: Ahora el botón NO se moverá relativo a TODA la tarjeta rosa */
+            position: relative; /* Clave: Mantiene los límites del movimiento del NO dentro de la tarjeta */
         }
         .question-box p {
             font-size: 1.8rem;
@@ -77,10 +78,10 @@
             gap: 40px;
         }
 
-        /* Contenedor fantasma para el botón NO: Mantiene el espacio del No intacto */
+        /* Contenedor fantasma para el botón NO: Mantiene el espacio del No intacto para que el SÍ no se mueva */
         .btn-no-wrapper {
-            width: 105px;  /* Ancho aproximado del botón NO con su padding */
-            height: 50px;  /* Alto aproximado del botón */
+            width: 105px;  
+            height: 50px;  
             display: flex;
             justify-content: center;
             align-items: center;
@@ -110,7 +111,7 @@
             background-color: #444;
             color: #ccc;
             z-index: 4;
-            transition: top 0.1s ease, left 0.1s ease; /* Transición suave opcional cuando salte */
+            transition: top 0.1s ease, left 0.1s ease;
         }
 
         /* Modal / Ventana emergente */
@@ -171,6 +172,8 @@
     </style>
 </head>
 <body>
+
+    <audio id="musicaFondo" src="music.mp3" loop></audio>
 
     <canvas id="matrixCanvas"></canvas>
 
@@ -248,6 +251,7 @@
         const btnNo = document.getElementById('btnNo');
         const questionBox = document.getElementById('questionBox');
         const modal = document.getElementById('modalSorpresa');
+        const musica = document.getElementById('musicaFondo');
 
         function moverBotonNo() {
             if (btnNo.style.position !== 'absolute') {
@@ -271,7 +275,20 @@
             moverBotonNo();
         });
 
+        // Interacción del SÍ con confeti y reproducción de música
         btnSi.addEventListener('click', () => {
+            // 1. Activa la música desde tu archivo music.mp3
+            musica.play().catch(error => console.log("Se requiere interacción para reproducir:", error));
+            
+            // 2. Dispara la explosión de confeti neón/rosa
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#ff007f', '#ffb3d9', '#ffffff']
+            });
+
+            // 3. Muestra tu modal personalizado
             modal.style.display = 'flex';
         });
 
